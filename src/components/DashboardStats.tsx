@@ -240,7 +240,7 @@ const DashboardStats: React.FC = () => {
       <div className="bg-blue-100 p-6 rounded-lg shadow-md">
         <div className="flex items-center justify-between">
           <button className="hover:cursor-pointer" onClick={() => setMostrarReporte(true)}>
-            📄 Reporte de Morosos
+            Reporte de Morosos
           </button>
 
           {mostrarReporte && (
