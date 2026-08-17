@@ -1,0 +1,14 @@
+---
+// src/pages/propietario/[id].astro
+import ProtectedLayout from '../../layouts/ProtectedLayout.astro';
+import AuthGuard from '../../components/auth/AuthGuard';
+import HistorialPropietario from '../../components/propietarios/HistorialPropietario';
+---
+
+<ProtectedLayout>
+  <AuthGuard client:load requireAdmin={true}>
+    <div class="container mx-auto px-4 py-8">
+      <HistorialPropietario client:load propietarioId={Astro.params.id} />
+    </div>
+  </AuthGuard>
+</ProtectedLayout>

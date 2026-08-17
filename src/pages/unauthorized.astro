@@ -1,0 +1,24 @@
+---
+// src/pages/unauthorized.astro
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+      <div class="text-6xl mb-4">🚫</div>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Acceso No Autorizado</h1>
+      <p class="text-gray-600 mb-6">
+        No tienes permisos para acceder a esta página.
+        <br />
+        Solo los administradores pueden acceder a esta sección.
+      </p>
+      <a 
+        href="/dashboard" 
+        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+      >
+        Volver al Dashboard
+      </a>
+    </div>
+  </div>
+</Layout>

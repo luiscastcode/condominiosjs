@@ -1,0 +1,208 @@
+---
+// src/pages/condominios.astro
+import Layout from '../layouts/Layout.astro';
+import { propiedadesService } from '../lib/services/propiedades.service';
+import type { Propiedad } from '../types';
+
+// Obtener propiedades con manejo de errores
+let propiedades: Propiedad[] = [];
+let error: string | null = null;
+
+try {
+  propiedades = await propiedadesService.getAllPublic();
+  console.log('📋 Propiedades cargadas:', propiedades.length);
+} catch (err) {
+  console.error('❌ Error cargando propiedades:', err);
+  error = err instanceof Error ? err.message : 'Error al cargar las propiedades';
+}
+---
+
+<Layout>
+  <div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        🌐 Directorio de Conjuntos Residenciales
+      </h1>
+      <p class="text-gray-600">
+        Información de contacto y datos bancarios para realizar sus pagos
+      </p>
+      <p class="text-sm text-gray-400 mt-1">
+        Total: {propiedades.length} propiedades registradas
+      </p>
+    </div>
+
+    {error && (
+      <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-6">
+        ❌ {error}
+      </div>
+    )}
+
+    {propiedades.length === 0 && !error ? (
+      <div class="text-center py-12 bg-white rounded-lg shadow-md">
+        <div class="text-6xl mb-4">🏢</div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay propiedades registradas</h3>
+        <p class="text-gray-500">
+          Actualmente no hay conjuntos residenciales disponibles en el sistema.
+        </p>
+        <p class="text-sm text-gray-400 mt-2">
+          Si eres administrador, inicia sesión para agregar propiedades.
+        </p>
+        <a 
+          href="/login" 
+          class="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          Iniciar Sesión
+        </a>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {propiedades.map((prop) => (
+          <div key={prop.id} class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition">
+            {/* Encabezado */}
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">
+                  {prop.tipo === 'edificio' ? '🏢' : 
+                   prop.tipo === 'torre' ? '🏗️' :
+                   prop.tipo === 'bloque' ? '🧱' :
+                   prop.tipo === 'casa' ? '🏠' : '📍'}
+                </span>
+                <h2 class="text-xl font-bold">{prop.nombre}</h2>
+              </div>
+              <p class="text-sm text-blue-100 mt-1">
+                {prop.ciudad}, {prop.estado}
+              </p>
+              {prop.tipo && (
+                <span class="inline-block mt-1 text-xs bg-blue-500 bg-opacity-50 px-2 py-1 rounded">
+                  {prop.tipo}
+                </span>
+              )}
+            </div>
+
+            {/* Contenido */}
+            <div class="p-4 space-y-3">
+              {prop.descripcion && (
+                <p class="text-gray-600 text-sm">{prop.descripcion}</p>
+              )}
+
+              {/* Datos de contacto */}
+              {(prop.telefono_contacto || prop.email_contacto || prop.horario_atencion) && (
+                <div class="border-t pt-3">
+                  <h3 class="font-semibold text-gray-700 text-sm flex items-center gap-2">
+                    <span>📞</span> Contacto
+                  </h3>
+                  {prop.telefono_contacto && (
+                    <p class="text-sm text-gray-600 mt-1">
+                      <span class="font-medium">Teléfono:</span> 
+                      <a href={`tel:${prop.telefono_contacto}`} class="text-blue-600 hover:underline ml-1">
+                        {prop.telefono_contacto}
+                      </a>
+                    </p>
+                  )}
+                  {prop.email_contacto && (
+                    <p class="text-sm text-gray-600">
+                      <span class="font-medium">Email:</span> 
+                      <a href={`mailto:${prop.email_contacto}`} class="text-blue-600 hover:underline ml-1">
+                        {prop.email_contacto}
+                      </a>
+                    </p>
+                  )}
+                  {prop.horario_atencion && (
+                    <p class="text-sm text-gray-600">
+                      <span class="font-medium">Horario:</span> 
+                      <span class="ml-1">{prop.horario_atencion}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Datos bancarios */}
+              {(prop.banco_nombre || prop.banco_cuenta) && (
+                <div class="border-t pt-3">
+                  <h3 class="font-semibold text-gray-700 text-sm flex items-center gap-2">
+                    <span>🏦</span> Datos Bancarios
+                  </h3>
+                  {prop.banco_nombre && (
+                    <p class="text-sm text-gray-600 mt-1">
+                      <span class="font-medium">Banco:</span> 
+                      <span class="ml-1 font-medium text-blue-600">{prop.banco_nombre}</span>
+                    </p>
+                  )}
+                  {prop.banco_tipo_cuenta && (
+                    <p class="text-sm text-gray-600">
+                      <span class="font-medium">Tipo:</span> 
+                      <span class="ml-1">{prop.banco_tipo_cuenta}</span>
+                    </p>
+                  )}
+                  {prop.banco_cuenta && (
+                    <p class="text-sm text-gray-600">
+                      <span class="font-medium">Cuenta:</span> 
+                      <span class="ml-1 font-mono text-sm">{prop.banco_cuenta}</span>
+                    </p>
+                  )}
+                  {prop.banco_cedula_rif && (
+                    <p class="text-sm text-gray-600">
+                      <span class="font-medium">Cédula/RIF:</span> 
+                      <span class="ml-1">{prop.banco_cedula_rif}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Datos de pago móvil */}
+              {(prop.pago_movil_telefono || prop.pago_movil_cedula) && (
+                <div class="border-t pt-3">
+                  <h3 class="font-semibold text-gray-700 text-sm flex items-center gap-2">
+                    <span>📱</span> Pago Móvil
+                  </h3>
+                  {prop.pago_movil_telefono && (
+                    <p class="text-sm text-gray-600 mt-1">
+                      <span class="font-medium">Teléfono:</span> 
+                      <span class="ml-1">{prop.pago_movil_telefono}</span>
+                    </p>
+                  )}
+                  {prop.pago_movil_cedula && (
+                    <p class="text-sm text-gray-600">
+                      <span class="font-medium">Cédula:</span> 
+                      <span class="ml-1">{prop.pago_movil_cedula}</span>
+                    </p>
+                  )}
+                  {prop.pago_movil_banco && (
+                    <p class="text-sm text-gray-600">
+                      <span class="font-medium">Banco:</span> 
+                      <span class="ml-1">{prop.pago_movil_banco}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Torres */}
+              {prop.torres && prop.torres.length > 0 && (
+                <div class="border-t pt-3">
+                  <h3 class="font-semibold text-gray-700 text-sm flex items-center gap-2">
+                    <span>🏗️</span> Torres / Bloques
+                  </h3>
+                  <div class="flex flex-wrap gap-1 mt-1">
+                    {prop.torres.map((torre) => (
+                      <span key={torre.id} class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
+                        {torre.nombre} ({torre.numero_pisos} pisos)
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Footer de la tarjeta */}
+              <div class="border-t pt-3 mt-2">
+                <div class="flex items-center justify-between text-xs text-gray-400">
+                  <span>ID: {prop.id.slice(0, 8)}</span>
+                  <span>Actualizado: {new Date(prop.updated_at).toLocaleDateString('es-VE')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</Layout>

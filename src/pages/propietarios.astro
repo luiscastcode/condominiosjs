@@ -1,0 +1,21 @@
+---
+// src/pages/propietarios.astro
+import ProtectedLayout from '../layouts/ProtectedLayout.astro';
+import AuthGuard from '../components/auth/AuthGuard';
+import PropietariosTable from '../components/propietarios/PropietariosTable';
+---
+
+<ProtectedLayout>
+  <AuthGuard client:load requireAdmin={true}>
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-800">👥 Gestión de Propietarios</h2>
+          <p class="text-gray-600 mt-1">Administra los propietarios y su ubicación en el conjunto residencial</p>
+        </div>
+      </div>
+      
+      <PropietariosTable client:load />
+    </div>
+  </AuthGuard>
+</ProtectedLayout>

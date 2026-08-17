@@ -1,0 +1,35 @@
+---
+// src/pages/dashboard.astro
+import ProtectedLayout from '../layouts/ProtectedLayout.astro';
+import AuthGuard from '../components/auth/AuthGuard';
+import DashboardStats from '../components/DashboardStats';
+import EstadoPagosTable from '../components/dashboard/EstadoPagosTable';
+---
+
+<ProtectedLayout>
+  <AuthGuard client:load>
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-bold text-gray-800">Dashboard</h2>
+        <div class="text-sm text-gray-500">
+          {new Date().toLocaleDateString('es-VE', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}
+        </div>
+      </div>
+      
+      <DashboardStats client:load />
+      
+      <div class="mt-8">
+        <EstadoPagosTable 
+          client:load 
+          onPropietarioClick={(propietarioId: string) => {
+            window.location.href = `/propietario/${propietarioId}`;
+          }}
+        />
+      </div>
+    </div>
+  </AuthGuard>
+</ProtectedLayout>

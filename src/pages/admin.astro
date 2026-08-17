@@ -1,0 +1,63 @@
+---
+import ProtectedLayout from "../layouts/ProtectedLayout.astro";
+import AuthGuard from "../components/auth/AuthGuard";
+import AdminManager from "../components/admin/AdminManager";
+import PropiedadManager from "../components/admin/PropiedadManager";
+import TasaCambioManager from "../components/admin/TasaCambioManager";
+import ConfiguracionSistema from "../components/admin/ConfiguracionSistema";
+import CanonManager from "../components/admin/CanonManager";
+---
+
+<ProtectedLayout>
+  <AuthGuard client:load requireAdmin={true}>
+    <div class="container mx-auto px-4 py-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-8">Área Administrativa</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Configuración del Sistema -->
+
+        <!-- Gestión de Canon Mensual -->
+        <div class="mb-8">
+          <CanonManager client:load />
+        </div>
+        <!-- Gestión de Tasa de Cambio -->
+        <div class="mb-8">
+          <TasaCambioManager client:load />
+        </div>
+      </div>
+      <!-- Gestión de Conjuntos Residenciales -->
+      <div class="mb-8">
+        <PropiedadManager client:load />
+      </div>
+
+      <!-- Gestión de Administradores -->
+      <div class="mb-8">
+        <AdminManager client:load />
+      </div>
+
+      <!-- Estadísticas Rápidas -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold mb-4">Estadísticas del Sistema</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="mb-8">
+              <ConfiguracionSistema client:load />
+            </div>
+          </div>
+          <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="text-2xl font-bold text-green-600" id="total-admins">
+              {0}
+            </div>
+            <p class="text-sm text-gray-600">Administradores</p>
+          </div>
+          <div class="text-center p-4 bg-yellow-50 rounded-lg">
+            <div class="text-2xl font-bold text-yellow-600" id="total-torres">
+              {0}
+            </div>
+            <p class="text-sm text-gray-600">Torres/Bloques</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AuthGuard>
+</ProtectedLayout>

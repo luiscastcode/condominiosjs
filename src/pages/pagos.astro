@@ -1,0 +1,36 @@
+---
+// src/pages/pagos.astro
+import ProtectedLayout from '../layouts/ProtectedLayout.astro';
+import AuthGuard from '../components/auth/AuthGuard';
+import PaymentTable from '../components/PaymentTable';
+---
+
+<ProtectedLayout>
+  <AuthGuard client:load requireAdmin={true}>
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-800">💰 Historial de Pagos</h2>
+          <p class="text-gray-600 mt-1">Registro y gestión de todos los pagos realizados por los propietarios</p>
+        </div>
+        <div class="flex gap-2">
+          <a 
+            href="/condominios" 
+            target="_blank"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2"
+          >
+            🌐 Ver Página Pública
+          </a>
+          <a 
+          href="/propietarios" 
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2"
+        >
+          👥 Ver Propietarios
+        </a>
+        </div>
+      </div>
+      
+      <PaymentTable client:load />
+    </div>
+  </AuthGuard>
+</ProtectedLayout>
